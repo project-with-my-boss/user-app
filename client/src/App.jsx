@@ -141,13 +141,13 @@ const App = () => {
       <td className="border border-gray-300 px-4 py-2 text-center">
         <button
           onClick={() => handleEdit(user)}
-          className="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+          className="w-fit bg-yellow-600 my-4 mx-auto md:bg-yellow-500 text-white px-3 py-1 rounded mr-2"
         >
           Edit
         </button>
         <button
           onClick={() => handleDelete(user._id)}
-          className="bg-red-500 text-white px-3 py-1 rounded"
+          className="w-fit bg-red-600 mx-auto my-4 md:bg-red-500 text-white px-3 py-1 rounded"
         >
           Delete
         </button>
