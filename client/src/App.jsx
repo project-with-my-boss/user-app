@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "./assets/logo.png";
 import { createUser, deleteUser, getUsers, updateUser } from "./service/useServie.js";
 
 
@@ -13,6 +14,7 @@ const App = () => {
 
 
   const [editingUser, setEditingUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
@@ -20,18 +22,22 @@ const App = () => {
   }, []);
   
   
+  
   const fetchUsers = async () => {
+    setIsLoading(true);
     try {
-        const  { data }  = await getUsers();
-          setUsers(data);
+      const  { data }  = await getUsers();
+      setUsers(data);
+      setIsLoading(false)
         } catch (error) {
           toast.error("Error fetching users");
+          setIsLoading(false)
         }
       };
-
-
-
-  const handleCreate = async (e) => {
+      
+      
+      
+      const handleCreate = async (e) => {
     e.preventDefault();
     try {
       await createUser(formData);
@@ -43,7 +49,8 @@ const App = () => {
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     try {
       if (editingUser) {
         await updateUser(editingUser._id, formData);
@@ -72,19 +79,20 @@ const App = () => {
     setFormData({ ...formData, [name]: value });
   };
   
-
+  
   const handleEdit = (user) => {
     setEditingUser(user);
     setFormData({ name: user.name, email: user.email });
   };
 
   const { name, email } = formData
-
+  
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <ToastContainer />
       <div className="max-w-4xl mx-auto bg-white rounded shadow p-6">
         <h1 className="text-2xl font-bold mb-4">User Management</h1>
+
 
         <div className="mb-6">
           <input
@@ -107,18 +115,26 @@ const App = () => {
             <button
               onClick={handleUpdate}
               className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
+              >
               Update
             </button>
           ) : (
             <button
               onClick={handleCreate}
               className="bg-green-500 text-white px-4 py-2 rounded"
-            >
+              >
               Create
             </button>
           )}
         </div>
+
+
+          {isLoading && (
+            <div className="relative flex justify-center items-center my-6 mr-4">
+               <img src={logo} alt="loading..." className="w-12 h-12 animate-spin" />
+            </div>
+          ) }
+
 
         <table className="w-full border-collapse border border-gray-300">
           <thead>
@@ -129,7 +145,10 @@ const App = () => {
               <th className="border border-gray-300 px-4 py-2">Actions</th>
             </tr>
           </thead>
+
+
           <tbody>
+            
           {users.length > 0 ? (
           users.map((user, index) => (
     <tr key={user._id} className="hover:bg-gray-100">
